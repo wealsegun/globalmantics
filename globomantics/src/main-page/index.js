@@ -1,24 +1,40 @@
-import logo from './logo.svg';
-import './main-page.css';
+import { useEffect, useState, useMemo } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "./main-page.css";
+import Header from "./header";
+import FeaturedHouse from "./featured-house";
 
 function App() {
+  const [allHouses, setAllHouses] = useState([]);
+  useEffect(() => {
+    const fetchHouse = async () => {
+      const rsp = await fetch("./houses.json");
+      const houses = await rsp.json();
+      setAllHouses(houses);
+    };
+    fetchHouse();
+  }, []);
+
+  const featuredHouse = useMemo(() => {
+    if (allHouses.length) {
+      const randomIndex = Math.floor(Math.random() * allHouses.length);
+      return allHouses[randomIndex];
+    }
+  }, [allHouses]);
+
+  // console.log("Featured House => " + featuredHouse)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="container">
+        <Header
+          subtitle="Providing houses all over the world"
+          // title="Globalmantics"
+        />
+        <Routes>
+          <Route path="/" element={<FeaturedHouse house={featuredHouse} />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
