@@ -1,13 +1,19 @@
-import {useHistory} from "react-router-dom";
+import { useContext } from "react";
+import {useNavigate} from "react-router-dom";
+import HouseContext from "../contexts/houseContext";
 
-const HouseFilter = ({ allHouses }) => {
-    const history = useHistory();
+const HouseFilter = () => {
+    const allHouses = useContext(HouseContext);
+    const history = useNavigate();
     const countries = allHouses ? Array.from(new Set(allHouses.map((h) => h.country))) : [];
-    countries.unshift();
+    // console.log(allHouses);
+    // console.log(countries);
+    countries.unshift(null);
 
     const onSearchChange  =(e) => {
          const country = e.target.value;
-         history.push("/searchresults/" + country);
+         console.log(country);
+         history("/searchresults/" + country);
     }
     return (
         <div className="row mt-3">
@@ -17,6 +23,7 @@ const HouseFilter = ({ allHouses }) => {
             <div className="col-md-4 mb-3">
                 <select className="form-select" onChange={onSearchChange}>
                     {countries.map((h) => (
+                        // console.log(h);
                         <option key={h} value={h}>{h}</option>
                     ))}
                 </select>
